@@ -49,12 +49,27 @@ if (!$pythonReady) {
 
 # Check/Install Node.js
 Write-Host "Sprawdzanie Node.js..."
-if (!(Get-Command "npm" -ErrorAction SilentlyContinue)) {
-    Write-Host "Node.js (npm) nie zostal znaleziony. Instaluje przez winget..." -ForegroundColor Yellow
+$nodeReady = $false
+if (Get-Command "node" -ErrorAction SilentlyContinue) {
+    # Check if installed node is at least v20.9.0 
+    $nodeVerStr = node -v
+    if ($nodeVerStr -match "v(\d+)\.(\d+)\.") {
+        $major = [int]$matches[1]
+        $minor = [int]$matches[2]
+        
+        # Next.js 16.1.6 and its ESLint plugins require Node >= 20.9.0
+        if (($major -gt 20) -or ($major -eq 20 -and $minor -ge 9)) {
+            $nodeReady = $true
+        }
+    }
+}
+
+if (!$nodeReady) {
+    Write-Host "Node.js (npm) nie zostal znaleziony lub jest zbyt stary (wymagane v20.9+). Aktualizuje przez winget..." -ForegroundColor Yellow
     winget install --id OpenJS.NodeJS -e --silent --accept-package-agreements --accept-source-agreements
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 } else {
-    Write-Host "Node.js juz zainstalowany." -ForegroundColor Green
+    Write-Host "Node.js jest prawidlowo zainstalowany." -ForegroundColor Green
 }
 
 # Setup Backend

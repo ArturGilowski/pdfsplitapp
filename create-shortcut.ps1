@@ -2,10 +2,10 @@ $WshShell = New-Object -comObject WScript.Shell
 $DesktopPath = [Environment]::GetFolderPath("Desktop")
 $Shortcut = $WshShell.CreateShortcut("$DesktopPath\PDF Splitter.lnk")
 
-$vbsPath = Join-Path $PSScriptRoot "hidden-launcher.vbs"
+$batPath = Join-Path $PSScriptRoot "run-servers.bat"
 
-$Shortcut.TargetPath = "wscript.exe"
-$Shortcut.Arguments = """$vbsPath"""
+$Shortcut.TargetPath = "powershell.exe"
+$Shortcut.Arguments = "-WindowStyle Hidden -Command `'Start-Process cmd -ArgumentList `'/c `"`"$batPath`"`"`' -WindowStyle Hidden`'"
 $Shortcut.WorkingDirectory = $PSScriptRoot
 
 # Use a built-in Windows icon 
