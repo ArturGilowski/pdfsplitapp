@@ -22,6 +22,7 @@ if (Test-Path ".\Setup.bat") {
     Start-Process ".\Setup.bat" -Wait
 }
 
-if (Test-Path ".\PDF splitter.exe") {
-    Start-Process ".\PDF splitter.exe"
+if (Test-Path ".\PDFsplitter.exe") {
+    Start-Process ".\PDFsplitter.exe"
 }
+
