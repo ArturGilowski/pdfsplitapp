@@ -26,17 +26,22 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 # Check/Install Python
 Write-Host "Sprawdzanie Pythona..."
 $pythonReady = $false
-if (Get-Command "python" -ErrorAction SilentlyContinue) {
-    # Proba uruchomienia python --version omija sztuczne pliki Windows Store
-    $ver = python --version 2>&1
-    if ($LASTEXITCODE -eq 0) {
+
+try {
+    # Uruchamiamy python omijajac systemowe bledy aplikacyjne, ErrorAction pomoze jesli pliku zupelnie brak, a przekierowanie 2>&1 zamaskuje sam blad Store
+    $ver = & python --version 2>&1
+    if ($LASTEXITCODE -eq 0 -and $ver -match "Python") {
         $pythonReady = $true
     }
+} catch {
+    # Ignorujemy błędy, w tym ten strasznie wyglądający czerwony z aliasem
 }
 
 if (!$pythonReady) {
-    Write-Host "Python nie zostal poprawnie znaleziony wg systemu (Windows Store Alias). Instaluje przez winget..." -ForegroundColor Yellow
-    winget install --id Python.Python.3.11 -e --silent --accept-package-agreements --accept-source-agreements
+    Write-Host "Python nie zostal znaleziony wg systemu lub blokuje go alias. Instaluje za pomoca winget..." -ForegroundColor Yellow
+    winget install --id Python.Python.3.11 -e --silent --accept-package-agreements --accept-source-agreements | Out-Null
+    
+    # Odswiezenie zmiennych srodowiskowych by skrypt zauwazyl Pythona bez koniecznosci restartu instalatora
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 } else {
     Write-Host "Python jest prawidlowo zainsalowany." -ForegroundColor Green
