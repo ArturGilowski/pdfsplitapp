@@ -63,8 +63,8 @@ Write-Host "Moduly NPM zainstalowane." -ForegroundColor Green
 
 # Generate desktop shortcut / launcher
 Set-Location -Path $PSScriptRoot
-Write-Host "Generowanie pliku EXE na pulpicie..." -ForegroundColor Cyan
-PowerShell -NoProfile -ExecutionPolicy Bypass -File "$PSScriptRoot\create-launcher.ps1"
+Write-Host "Generowanie Skrotu do aplikacji na pulpicie..." -ForegroundColor Cyan
+PowerShell -NoProfile -ExecutionPolicy Bypass -File "$PSScriptRoot\create-shortcut.ps1"
 
 Write-Host "--------------------------------------------------------" -ForegroundColor Cyan
 Write-Host "Gotowe! Aplikacja zostala w pelni zainstalowana." -ForegroundColor Green
