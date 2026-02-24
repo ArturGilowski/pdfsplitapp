@@ -1,51 +1,61 @@
-$repo = "https://github.com/ArturGilowski/pdfsplitapp.git"
-$installPath = "$env:LOCALAPPDATA\pdfsplitapp"
+win -> terminal -> ctrl + v (poniższy skrypt) -> enter 
+powinna stworzyc się ikonka o nazwie "PDF Splitter" na pulpicie 
+uruchomienie zajmie kilka sekund 
 
-# Sprawdzenie i zautomatyzowana instalacja Git (wymagane obejscia na licencje w tle)
-if (!(Get-Command git -ErrorAction SilentlyContinue)) {
-    Write-Host "Instalowanie środowiska Git..." -ForegroundColor Cyan
-    winget install --id Git.Git -e --silent --accept-package-agreements --accept-source-agreements
-    
-    # Odswiezenie zmiennej srodowiskowej w locie
-    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-    if (!(Get-Command git -ErrorAction SilentlyContinue)) {
-        $env:Path += ";C:\Program Files\Git\cmd"
-    }
-}
+Obsługa aplikacji:
+- wrzucamy PDF który chcemy podzielic 
+- klikamy przycisk analizuj
+- sprawdzamy podzial jesli jest zly to poprawiamy 
+- akceptujemy 
+- pobieramy zip
+
+KOD PSHW: 
+-------------------------------------------------------------------------------------------------------------------------------
+
+
+  $repoZip = "https://github.com/ArturGilowski/pdfsplitapp/archive/refs/heads/main.zip"
+$installPath = "$env:LOCALAPPDATA\pdfsplitapp"
+$zipPath = "$env:TEMP\pdfsplitapp.zip"
+
+Write-Host "Rozpoczynam instalacje w: $installPath" -ForegroundColor Cyan
 
 if (!(Test-Path $installPath)) {
-    New-Item -ItemType Directory -Path $installPath -Force | Out-Null
+New-Item -ItemType Directory -Path $installPath -Force | Out-Null
 }
+
 Set-Location $installPath
 
-if (!(Test-Path ".git")) {
-    Write-Host "Pobieranie repozytorium..." -ForegroundColor Cyan
-    git clone $repo .
-} else {
-    Write-Host "Aktualizowanie istniejącego folderu..." -ForegroundColor Cyan
-    git pull
-}
+Write-Host "Pobieranie paczki aplikacji bez logowania..." -ForegroundColor Cyan
+Invoke-WebRequest -Uri $repoZip -OutFile $zipPath
+
+Write-Host "Rozpakowywanie plikow..." -ForegroundColor Cyan
+Expand-Archive -Path $zipPath -DestinationPath $env:TEMP -Force
+Copy-Item -Path "$env:TEMP\pdfsplitapp-main\*" -Destination $installPath -Recurse -Force
+Remove-Item -Path "$env:TEMP\pdfsplitapp-main" -Recurse -Force
+Remove-Item -Path $zipPath -Force
 
 if (Test-Path ".\install.ps1") {
-    Write-Host "Rozpoczynam zautomatyzowana instalacje (pythona, noda i tesseract-ocr)." -ForegroundColor Yellow
-    Write-Host "Zaakceptuj prośbę o uprawnienia administratora w nowym oknie!" -ForegroundColor Yellow
-    
-    # Budujemy bezwględną ścieżkę do pobranego pliku install.ps1, tak aby system uważał na zmianę katalogów
-    $installScript = Join-Path $installPath "install.ps1"
-    
-    # Uruchamiamy od razu PowerShell z uprawnieniami administratora i flagą -Wait
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$installScript`"" -Verb RunAs -Wait
+Write-Host "Rozpoczynam zautomatyzowana instalacje srodowisk uruchomieniowych..." -ForegroundColor Yellow
+Write-Host ">>> ZAAKCEPTUJ PROSBE O UPRAWNIENIA ADMINISTRATORA W NOWYM OKNIE! <<<" -ForegroundColor Yellow
+
+$installScript = Join-Path $installPath "install.ps1"
+
+$args = '-NoExit -NoProfile -ExecutionPolicy Bypass -File "' + $installScript + '"'
+Start-Process -FilePath "powershell.exe" -ArgumentList $args -Verb RunAs -Wait
 }
 
-# Po poprawnej instalacji skrót .lnk pojawia się na pulpicie użytkownika = odpalmy go!
 $desktopPath = [Environment]::GetFolderPath("Desktop")
 $exePath = Join-Path $desktopPath "PDF Splitter.lnk"
 
 if (Test-Path $exePath) {
-    Write-Host "Instalacja zakonczona sukcesem! Uruchamianie silnika PDF z pliku " $exePath "..." -ForegroundColor Green
-    Start-Process $exePath
+Write-Host "Instalacja zakonczona mega sukcesem! Odpalam okno..." -ForegroundColor Green
+Start-Process $exePath
 } else {
-    Write-Host "Cós poszlo nie tak. Środowisko nie wygenerowało pliku PDF Splitter.lnk na Twoim pulpicie." -ForegroundColor Red
-}
+Write-Host "Cós poszlo nie tak z instalatorem - brak PDF Splitter.lnk" -ForegroundColor Red
+}  
 
 
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Artur Gilowski
