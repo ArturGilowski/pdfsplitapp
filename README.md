@@ -1,3 +1,6 @@
+© 2026 ARTUR GILOWSKI. All rights reserved. 
+This software may not be copied, modified, or redistributed without permission.
+-------------------------------------------------------------------------------------------------------------------------------
 win -> terminal -> ctrl + v (poniższy skrypt) -> enter 
 powinna stworzyc się ikonka o nazwie "PDF Splitter" na pulpicie 
 uruchomienie zajmie kilka sekund 
@@ -64,5 +67,6 @@ APP VIEW
 -------------------------------------------------------------------------------------------------------------------------------
 
 Artur Gilowski
+
 
 
