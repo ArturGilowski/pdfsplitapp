@@ -57,7 +57,6 @@ Write-Host "Cós poszlo nie tak z instalatorem - brak PDF Splitter.lnk" -Foregro
 -------------------------------------------------------------------------------------------
 APP VIEW
 <img width="1293" height="980" alt="image" src="https://github.com/user-attachments/assets/37c4803f-d6ee-4ba8-a34b-c63c6a4b3af7" />
-<img width="1293" height="980" alt="Screenshot 2026-03-05 163708" src="https://github.com/user-attachments/assets/daacce7e-b4fb-4005-a652-e0ff33ffff37" />
 <img width="1284" height="975" alt="Screenshot 2026-03-05 163818" src="https://github.com/user-attachments/assets/ae00095b-8e80-4719-a94e-265bc381354d" />
 <img width="1295" height="978" alt="image" src="https://github.com/user-attachments/assets/7ee59403-8504-4679-bbd1-759f4f3b5ae9" />
 <img width="1288" height="985" alt="image" src="https://github.com/user-attachments/assets/7be46ed2-a7ad-4bc3-b24a-cc8583624a0d" />
@@ -65,4 +64,5 @@ APP VIEW
 -------------------------------------------------------------------------------------------------------------------------------
 
 Artur Gilowski
+
 
